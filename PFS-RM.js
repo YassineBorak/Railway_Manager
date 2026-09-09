@@ -64,7 +64,72 @@ function acheterUnTicket(arrTrips, arrTickets){
     }
 }
 
+//Afficher les tickets
+function afficherLesTickets(arrTickets, arrTrips){
+    if(arrTickets.length <= 0){
+        console.log('Aucun ticket enregistré.');
+        return;
+    }
 
+    console.log('\n=== TICKETS ===\n')
+    for(const ticket of arrTickets){
+        console.log(`Ticket #${ticket.id}`);
+        console.log(`Passager : ${ticket.passengerName}`);
+        console.log(`Trajet : ${arrTrips[ticket.tripId - 1].departure} → ${arrTrips[ticket.tripId -1 ].destination}`);
+        console.log(`Place : ${ticket.seatNumber}`);
+        console.log(`Prix : ${ticket.price} DH\n`);
+    }
+}
+
+// Annuler un ticket
+function annulerUnTicket(arrTickets, arrTrips){
+    const ticketId = Number(prompt('Veuillez entrer l\'identifiant du ticket: '));
+
+    let ticketFound = false;
+    for(let i = 0; i < arrTickets.length; i++){
+        if(arrTickets[i].id === ticketId){
+            ticketFound = true;
+
+            for(const trip of arrTrips)
+                if(trip.id === ticketId)
+                    trip.availableSeats +=1;
+
+            arrTickets.splice(i, 1);
+            console.log('Ticket annulé avec succès.');
+            break;
+        }
+    }
+    if(!ticketFound){
+        console.log('Ticket non trouvé.');
+    }
+}
+
+// Rechercher un ticket
+function rechercherUnTicket(arrTickets, arrTrips){
+    const PassgName = prompt('Veuillez entrer votre nom: ');
+
+    let foundPassger = false;
+    for(const ticket of arrTickets){
+        if(ticket.passengerName === PassgName){
+            foundPassger = true;
+            console.log(`Ticket #${ticket.id}`);
+            console.log(`Passager : ${ticket.passengerName}`);
+            console.log(`Trajet : ${arrTrips[ticket.tripId - 1].departure} → ${arrTrips[ticket.tripId -1 ].destination}`);
+            console.log(`Place : ${ticket.seatNumber}`);
+            console.log(`Prix : ${ticket.price} DH`);
+        }
+    }
+
+    if(!foundPassger){
+        console.log(`Passager ${PassgName} n'est pas disponible`);
+        return;
+    }
+}
+
+// Filtrer les trajets
+function filtrerLesTrajets(){
+    
+}
 
 //Menu:
 let menu = true;

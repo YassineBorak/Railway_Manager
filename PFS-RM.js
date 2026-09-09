@@ -10,6 +10,8 @@ function afficherTrajet(arrTrips){
     // condition for disponible traget
     console.log('\n=== TRAJETS DISPONIBLES ===\n');
     for(let i = 0; i <= arrTrips.length - 1; i++){
+        if(arrTrips[i].availableSeats <= 0)
+            continue
         console.log(`#${i+1} ${arrTrips[i].departure} → ${arrTrips[i].destination}\n`);
         console.log(`Départ : ${arrTrips[i].departureTime}\n`);
         console.log(`Arrivée : ${arrTrips[i].arrivalTime}\n`);
@@ -19,7 +21,7 @@ function afficherTrajet(arrTrips){
 }
     
 // 4. Acheter un ticket
-// let ticketId = 0;
+let ticketId = 1
 function acheterUnTicket(arrTrips, arrTickets){
     const PassgName = prompt('Veuillez entrer votre nom: ');
     const targetId = Number(prompt('Veuillez entrer l\'identifiant du trajet: '));
@@ -28,7 +30,6 @@ function acheterUnTicket(arrTrips, arrTickets){
     for(let trip of arrTrips){
         if(trip.id === targetId){
             tripFound = true;
-            // ticketId++;
 
             if(trip.availableSeats <= 0){
                 console.log('Train complet.');
@@ -36,7 +37,7 @@ function acheterUnTicket(arrTrips, arrTickets){
             }
 
             const ticket = {
-                id: arrTickets.length + 1,
+                id: ticketId++,
                 passengerName: PassgName,
                 tripId: trip.id,
                 seatNumber: 50 - trip.availableSeats + 1,
@@ -49,9 +50,8 @@ function acheterUnTicket(arrTrips, arrTickets){
             break;
         }
     }
-    if(!tripFound){
+    if(!tripFound)
         console.log('Trajet non trouvé.');
-    }
 }
 
 //Afficher les tickets
@@ -81,7 +81,7 @@ function annulerUnTicket(arrTickets, arrTrips){
             ticketFound = true;
 
             for(const trip of arrTrips)
-                if(trip.id === ticketId)
+                if(trip.id === arrTickets[i].tripId)
                     trip.availableSeats +=1;
 
             arrTickets.splice(i, 1);
@@ -94,17 +94,22 @@ function annulerUnTicket(arrTickets, arrTrips){
     }
 }
 
+function cleanName(name){
+    return name.trim() + name.charAt(0).toUpperCase() + name.slice(1);
+}
+
 // Rechercher un ticket
 function rechercherUnTicket(arrTickets, arrTrips){
     // treat trim and lower or upper case later
-    const PassgName = prompt('Veuillez entrer votre nom: ');
+    const passgName = prompt('Veuillez entrer votre nom: ');
+    // let CleanPassgName = cleanName(passgName);
 
     let foundPassger = false;
     for(const ticket of arrTickets){
-        if(ticket.passengerName === PassgName){
+        if(ticket.passengerName === passgName){
             foundPassger = true;
             console.log(`Ticket #${ticket.id}`);
-            console.log(`Passager : ${ticket.passengerName}`);
+            console.log(`Passager : ${ticket.passgName}`);
             console.log(`Trajet : ${arrTrips[ticket.tripId - 1].departure} → ${arrTrips[ticket.tripId -1 ].destination}`);
             console.log(`Place : ${ticket.seatNumber}`);
             console.log(`Prix : ${ticket.price} DH`);
@@ -112,7 +117,7 @@ function rechercherUnTicket(arrTickets, arrTrips){
     }
 
     if(!foundPassger){
-        console.log(`Passager ${PassgName} n'est pas disponible`);
+        console.log(`Passager ${passgName} n'est pas disponible`);
         return;
     }
 }
@@ -184,7 +189,7 @@ function trajetPlusVendus(arrTickets, arrTrips){
             if(arrTrips[i].availableSeats < minSeatDispo.availableSeats)
                 minSeatDispo = arrTrips[i];
     }
-    // const mostSold = 
+
     console.log(`\n ${minSeatDispo.departure} → ${minSeatDispo.destination}\n`)
     return 50 - minSeatDispo.availableSeats;;
 }

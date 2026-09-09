@@ -160,6 +160,7 @@ function nombreTotalTicketVendus(arrTickets){
     return count;
 }
 
+// Chiffre d'affaires total
 function chiffreDaffaireTotal(arrTickets){
     if(arrTickets.length <= 0)
         return 'Aucun ticket enregistré.';
@@ -169,7 +170,23 @@ function chiffreDaffaireTotal(arrTickets){
     for(const ticket of arrTickets){
         sum += ticket.price;
     }
-    return sum 
+    return sum;
+}
+
+//Trajet le plus vendu
+function trajetPlusVendus(arrTickets, arrTrips){
+    if(arrTickets.length <= 0)
+        return 'Aucun ticket enregistré.'
+
+    let minSeatDispo = arrTrips[0];
+    for(let i = 0; i < arrTickets.length; i++){
+        if(arrTrips.id === arrTickets.tripId)
+            if(arrTrips[i].availableSeats < minSeatDispo.availableSeats)
+                minSeatDispo = arrTrips[i];
+    }
+    // const mostSold = 
+    console.log(`\n ${minSeatDispo.departure} → ${minSeatDispo.destination}\n`)
+    return 50 - minSeatDispo.availableSeats;;
 }
 
 //Menu:
@@ -203,7 +220,7 @@ while (menu){
         case '7': trierLesTrajets(trips); break;
         case '8': console.log("Nombre total de tickets :", nombreTotalTicketVendus(tickets)); break;
         case '9': console.log(`Chiffre d'affaires total : ${chiffreDaffaireTotal(tickets)} DH`); break;
-        case '10': trajetPlusVendus(); break;
+        case '10': console.log(`${trajetPlusVendus(tickets, trips)} tickets vendus`); break;
         case '0': menu = false; break;
         default:
             'Choix indisponible, choisir à nouveau: '

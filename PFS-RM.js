@@ -29,6 +29,41 @@ function afficherTrajet(arrTrips){
     }
 }
     
+// 4. Acheter un ticket
+let ticketId = 1;
+function acheterUnTicket(arrTrips, arrTickets){
+    const PassgName = prompt('Veuillez entrer votre nom: ');
+    const targetId = Number(prompt('Veuillez entrer l\'identifiant du trajet: '));
+    // treat lower and uppercase, and trim
+    let tripFound = false;
+    for(let trip of arrTrips){
+        if(trip.id === targetId){
+            tripFound = true;
+
+            if(trip.availableSeats <= 0){
+                console.log('Train complet.');
+                return;
+            }
+
+            const ticket = {
+                id: ticketId,
+                passengerName: PassgName,
+                tripId: trip.id,
+                seatNumber: 50 - trip.availableSeats + 1,
+                price: trip.price
+            }
+            trip.availableSeats -= 1;
+            arrTickets.push(ticket);
+            ticketId++;
+            console.log('Ticket acheté avec succès.');
+            break;
+        }
+    }
+    if(!tripFound){
+        console.log('Trajet non trouvé.');
+    }
+}
+
 
 
 //Menu:

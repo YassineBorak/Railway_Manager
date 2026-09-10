@@ -3,7 +3,19 @@ import {trips} from './data.js';
 import promptSync from 'prompt-sync';
 var prompt = promptSync();
 
-const tickets = [];
+const tickets = [
+    { id: 1, passengerName: 'Yassine', tripId: 3, seatNumber: 1, price: 140 },
+    { id: 2, passengerName: 'Ahmed', tripId: 1, seatNumber: 1, price: 25 },
+    { id: 3, passengerName: 'Sara', tripId: 2, seatNumber: 1, price: 90 },
+    { id: 4, passengerName: 'Omar', tripId: 3, seatNumber: 2, price: 140 },
+    { id: 5, passengerName: 'Salma', tripId: 5, seatNumber: 1, price: 110 },
+    { id: 6, passengerName: 'Hamza', tripId: 6, seatNumber: 1, price: 120 },
+    { id: 7, passengerName: 'Nour', tripId: 7, seatNumber: 1, price: 150 },
+    { id: 8, passengerName: 'Imane', tripId: 3, seatNumber: 3, price: 140 },
+    { id: 9, passengerName: 'Mehdi', tripId: 9, seatNumber: 1, price: 55 },
+    { id: 10, passengerName: 'Yassine', tripId: 3, seatNumber: 4, price: 140 }
+];
+
 
 // Affichage:
 function afficherTrajet(arrTrips){
@@ -18,6 +30,27 @@ function afficherTrajet(arrTrips){
         console.log(`Prix: ${arrTrips[i].price} DH\n`);
         console.log(`Places disponibles : ${arrTrips[i].availableSeats}\n`);
         console.log('============================\n');
+    }
+}
+
+// assigner le numero de place++
+function NumeroDePlace(arrTickets, tripid){
+
+    let seat = 1;
+    while(true){
+
+        let exists = false;
+        for (let i = 0; i < arrTickets.length; i++){
+            if (arrTickets[i].tripId === tripid && arrTickets[i].seatNumber === seat){
+                exists = true;
+                break;
+            }
+        }
+
+        if(!exists)
+            return seat;
+
+        seat++;
     }
 }
 
@@ -41,7 +74,8 @@ function acheterUnTicket(arrTrips, arrTickets){
                 id: ticketId++,
                 passengerName: PassgName,
                 tripId: arrTrips[i].id,
-                seatNumber: 50 - arrTrips[i].availableSeats + 1,
+                // seatNumber: 50 - arrTrips[i].availableSeats + 1,
+                seatNumber: NumeroDePlace(arrTickets, arrTrips[i].id),
                 price: arrTrips[i].price
             }
 
@@ -199,7 +233,7 @@ function trajetPlusVendus(arrTickets, arrTrips){
     return 50 - minSeatDispo.availableSeats;;
 }
 
-////////////////
+////////
 function clean(name){
     return name.trim().toLowerCase();
 }
@@ -210,12 +244,11 @@ function capitalize(name){
 
 // affichage apres achat
 function affichageTicketApresAchat(arrTrips, ticket){
-        console.log(`Passager : ${capitalize(ticket.passengerName)}`);
+        console.log(`\nPassager : ${capitalize(ticket.passengerName)}`);
         console.log(`Trajet : ${arrTrips[ticket.tripId - 1].departure} → ${arrTrips[ticket.tripId -1 ].destination}`);
         console.log(`Place : ${ticket.seatNumber}`);
         console.log(`Prix : ${ticket.price} DH\n`);
 }
-
 
 //Menu:
 let menu = true;

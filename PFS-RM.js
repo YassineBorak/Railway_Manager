@@ -74,7 +74,6 @@ function acheterUnTicket(arrTrips, arrTickets){
                 id: ticketId++,
                 passengerName: PassgName,
                 tripId: arrTrips[i].id,
-                // seatNumber: 50 - arrTrips[i].availableSeats + 1,
                 seatNumber: NumeroDePlace(arrTickets, arrTrips[i].id),
                 price: arrTrips[i].price
             }

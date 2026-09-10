@@ -3,11 +3,41 @@ import {trips} from './data.js';
 import promptSync from 'prompt-sync';
 var prompt = promptSync();
 
-const tickets = [];
+const tickets = [
+    // {
+    //     id: 1,
+    //     passengerName: "Ahmed",
+    //     tripId: 3,
+    //     seatNumber: 1,
+    //     price: 90
+    // },
+    // {
+    //     id: 2,
+    //     passengerName: "yassine",
+    //     tripId: 3,
+    //     seatNumber: 2,
+    //     price: 90
+    // },
+    // {
+    //     id: 3,
+    //     passengerName: "Muad",
+    //     tripId: 2,
+    //     seatNumber: 1,
+    //     price: 90
+    // },
+];
+
+function clean(name){
+    return name.trim().toLowerCase();
+}
+
+function capitalize(name){
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+}
 
 // Affichage:
 function afficherTrajet(arrTrips){
-    // condition for disponible traget
+
     console.log('\n=== TRAJETS DISPONIBLES ===\n');
     for(let i = 0; i <= arrTrips.length - 1; i++){
         if(arrTrips[i].availableSeats <= 0)
@@ -15,23 +45,24 @@ function afficherTrajet(arrTrips){
         console.log(`#${i+1} ${arrTrips[i].departure} → ${arrTrips[i].destination}\n`);
         console.log(`Départ : ${arrTrips[i].departureTime}\n`);
         console.log(`Arrivée : ${arrTrips[i].arrivalTime}\n`);
-        console.log(`Prix: ${arrTrips[i].price}\n`);
+        console.log(`Prix: ${arrTrips[i].price} DH\n`);
         console.log(`Places disponibles : ${arrTrips[i].availableSeats}\n`);
+        console.log('============================\n');
     }
 }
-    
+
 // 4. Acheter un ticket
 let ticketId = 1
 function acheterUnTicket(arrTrips, arrTickets){
-    const PassgName = prompt('Veuillez entrer votre nom: ');
+    let PassgName = clean(prompt('Veuillez entrer votre nom: '));
     const targetId = Number(prompt('Veuillez entrer l\'identifiant du trajet: '));
-    // treat lower and uppercase, and trim
+
     let tripFound = false;
-    for(let trip of arrTrips){
-        if(trip.id === targetId){
+    for(let i = 0; i < arrTrips.length - 1; i++){
+        if(arrTrips[i].id === targetId){
             tripFound = true;
 
-            if(trip.availableSeats <= 0){
+            if(arrTrips[i].availableSeats <= 0){
                 console.log('Train complet.');
                 return;
             }
@@ -39,17 +70,19 @@ function acheterUnTicket(arrTrips, arrTickets){
             const ticket = {
                 id: ticketId++,
                 passengerName: PassgName,
-                tripId: trip.id,
-                seatNumber: 50 - trip.availableSeats + 1,
-                price: trip.price
+                tripId: arrTrips[i].id,
+                seatNumber: 50 - arrTrips[i].availableSeats + 1,
+                price: arrTrips[i].price
             }
-            trip.availableSeats -= 1;
+
+            arrTrips[i].availableSeats -= 1;
             arrTickets.push(ticket);
             
             console.log('Ticket acheté avec succès.');
             break;
         }
     }
+
     if(!tripFound)
         console.log('Trajet non trouvé.');
 }
@@ -64,7 +97,7 @@ function afficherLesTickets(arrTickets, arrTrips){
     console.log('\n=== TICKETS ===\n')
     for(const ticket of arrTickets){
         console.log(`Ticket #${ticket.id}`);
-        console.log(`Passager : ${ticket.passengerName}`);
+        console.log(`Passager : ${capitalize(ticket.passengerName)}`);
         console.log(`Trajet : ${arrTrips[ticket.tripId - 1].departure} → ${arrTrips[ticket.tripId -1 ].destination}`);
         console.log(`Place : ${ticket.seatNumber}`);
         console.log(`Prix : ${ticket.price} DH\n`);
@@ -89,30 +122,25 @@ function annulerUnTicket(arrTickets, arrTrips){
             break;
         }
     }
-    if(!ticketFound){
+
+    if(!ticketFound)
         console.log('Ticket non trouvé.');
-    }
 }
 
-function cleanName(name){
-    return name.trim() + name.charAt(0).toUpperCase() + name.slice(1);
-}
 
 // Rechercher un ticket
 function rechercherUnTicket(arrTickets, arrTrips){
-    // treat trim and lower or upper case later
-    const passgName = prompt('Veuillez entrer votre nom: ');
-    // let CleanPassgName = cleanName(passgName);
+    const passgName = clean(prompt('Veuillez entrer le nom de passager: '));
 
     let foundPassger = false;
-    for(const ticket of arrTickets){
-        if(ticket.passengerName === passgName){
+    for(let i = 0; i < arrTickets.length; i++){
+        if(arrTickets[i].passengerName.toLowerCase() === passgName){
             foundPassger = true;
-            console.log(`Ticket #${ticket.id}`);
-            console.log(`Passager : ${ticket.passgName}`);
-            console.log(`Trajet : ${arrTrips[ticket.tripId - 1].departure} → ${arrTrips[ticket.tripId -1 ].destination}`);
-            console.log(`Place : ${ticket.seatNumber}`);
-            console.log(`Prix : ${ticket.price} DH`);
+            console.log(`\nTicket #${arrTickets[i].id}`);
+            console.log(`Passager : ${capitalize(arrTickets[i].passengerName)}`);
+            console.log(`Trajet : ${arrTrips[arrTickets[i].tripId - 1].departure} → ${arrTrips[arrTickets[i].tripId - 1].destination}`);
+            console.log(`Place : ${arrTickets[i].seatNumber}`);
+            console.log(`Prix : ${arrTickets[i].price} DH`);
         }
     }
 
@@ -124,12 +152,12 @@ function rechercherUnTicket(arrTickets, arrTrips){
 
 // Filtrer les trajets
 function filtrerLesTrajets(arrTrips){
-    // treat trim and lower or upper case later
-    const dpartureCity = prompt('Veuillez entrer la ville de départ : ');
+    const dpartureCity = clean(prompt('\nVeuillez entrer la ville de départ : '));
+    console.log('\n');
     
     for(const trip of arrTrips){
-        if(trip.departure === dpartureCity)
-            console.log(`${trip.departure} → ${trip.destination} : ${trip.price} DH`);
+        if(trip.departure.toLowerCase() === dpartureCity)
+            console.log(`${capitalize(trip.departure)} → ${capitalize(trip.destination)} : ${trip.price} DH`);
     }
 }
 
@@ -147,7 +175,14 @@ function trierLesTrajets(arrTrips){
             }
         }
     }
-    for(const ticket of newArrTrips){
+
+    return newArrTrips;
+}
+
+// affichage tri
+function affichageApresTri(sortedArr){
+    console.log('\n');
+    for(const ticket of sortedArr){
         console.log(`${ticket.departure} → ${ticket.destination}: ${ticket.price} DH`);
     }
 }
@@ -162,6 +197,7 @@ function nombreTotalTicketVendus(arrTickets){
         if(ticket.price) 
             count++;
     }
+
     return count;
 }
 
@@ -175,6 +211,7 @@ function chiffreDaffaireTotal(arrTickets){
     for(const ticket of arrTickets){
         sum += ticket.price;
     }
+    
     return sum;
 }
 
@@ -190,7 +227,7 @@ function trajetPlusVendus(arrTickets, arrTrips){
                 minSeatDispo = arrTrips[i];
     }
 
-    console.log(`\n ${minSeatDispo.departure} → ${minSeatDispo.destination}\n`)
+    console.log(`\n${minSeatDispo.departure} → ${minSeatDispo.destination}\n`)
     return 50 - minSeatDispo.availableSeats;;
 }
 
@@ -213,7 +250,7 @@ while (menu){
     console.log('0. Quitter\n');
 
     let choice = "";
-    choice = prompt('Votre choix de 1 a 10 ou 0 pour sortit : ')
+    choice = prompt('Votre choix de 1 a 10 ou 0 pour sortir : ')
 
     switch(choice){
         case '1': afficherTrajet(trips); break;
@@ -222,9 +259,9 @@ while (menu){
         case '4': annulerUnTicket(tickets, trips); break;
         case '5': rechercherUnTicket(tickets, trips); break;
         case '6': filtrerLesTrajets(trips); break;
-        case '7': trierLesTrajets(trips); break;
-        case '8': console.log("Nombre total de tickets :", nombreTotalTicketVendus(tickets)); break;
-        case '9': console.log(`Chiffre d'affaires total : ${chiffreDaffaireTotal(tickets)} DH`); break;
+        case '7': affichageApresTri(trierLesTrajets(trips)); break;
+        case '8': console.log("\nNombre total de tickets :", nombreTotalTicketVendus(tickets)); break;
+        case '9': console.log(`\nChiffre d'affaires total : ${chiffreDaffaireTotal(tickets)} DH`); break;
         case '10': console.log(`${trajetPlusVendus(tickets, trips)} tickets vendus`); break;
         case '0': menu = false; break;
         default:

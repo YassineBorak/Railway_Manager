@@ -3,37 +3,7 @@ import {trips} from './data.js';
 import promptSync from 'prompt-sync';
 var prompt = promptSync();
 
-const tickets = [
-    // {
-    //     id: 1,
-    //     passengerName: "Ahmed",
-    //     tripId: 3,
-    //     seatNumber: 1,
-    //     price: 90
-    // },
-    // {
-    //     id: 2,
-    //     passengerName: "yassine",
-    //     tripId: 3,
-    //     seatNumber: 2,
-    //     price: 90
-    // },
-    // {
-    //     id: 3,
-    //     passengerName: "Muad",
-    //     tripId: 2,
-    //     seatNumber: 1,
-    //     price: 90
-    // },
-];
-
-function clean(name){
-    return name.trim().toLowerCase();
-}
-
-function capitalize(name){
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-}
+const tickets = [];
 
 // Affichage:
 function afficherTrajet(arrTrips){
@@ -52,7 +22,7 @@ function afficherTrajet(arrTrips){
 }
 
 // 4. Acheter un ticket
-let ticketId = 1
+let ticketId = 1;
 function acheterUnTicket(arrTrips, arrTickets){
     let PassgName = clean(prompt('Veuillez entrer votre nom: '));
     const targetId = Number(prompt('Veuillez entrer l\'identifiant du trajet: '));
@@ -79,7 +49,7 @@ function acheterUnTicket(arrTrips, arrTickets){
             arrTickets.push(ticket);
             
             console.log('Ticket acheté avec succès.');
-            break;
+            return affichageTicketApresAchat(arrTrips, ticket);
         }
     }
 
@@ -150,12 +120,11 @@ function rechercherUnTicket(arrTickets, arrTrips){
 }
 
 // Filtrer les trajets
-function filtrerLesTrajets(arrTrips){
-    const dpartureCity = clean(prompt('\nVeuillez entrer la ville de départ : '));
+function filtrerLesTrajets(arrTrips, depart){
     console.log('\n');
-    
+
     for(const trip of arrTrips){
-        if(trip.departure.toLowerCase() === dpartureCity)
+        if(trip.departure.toLowerCase() === depart)
             console.log(`${capitalize(trip.departure)} → ${capitalize(trip.destination)} : ${trip.price} DH`);
     }
 }
@@ -230,6 +199,24 @@ function trajetPlusVendus(arrTickets, arrTrips){
     return 50 - minSeatDispo.availableSeats;;
 }
 
+////////////////
+function clean(name){
+    return name.trim().toLowerCase();
+}
+
+function capitalize(name){
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+}
+
+// affichage apres achat
+function affichageTicketApresAchat(arrTrips, ticket){
+        console.log(`Passager : ${capitalize(ticket.passengerName)}`);
+        console.log(`Trajet : ${arrTrips[ticket.tripId - 1].departure} → ${arrTrips[ticket.tripId -1 ].destination}`);
+        console.log(`Place : ${ticket.seatNumber}`);
+        console.log(`Prix : ${ticket.price} DH\n`);
+}
+
+
 //Menu:
 let menu = true;
 while (menu){
@@ -257,7 +244,7 @@ while (menu){
         case '3': afficherLesTickets(tickets, trips); break;
         case '4': annulerUnTicket(tickets, trips); break;
         case '5': rechercherUnTicket(tickets, trips); break;
-        case '6': filtrerLesTrajets(trips); break;
+        case '6': filtrerLesTrajets(trips, clean(prompt('Veuillez entrer la ville de départ : '))); break;
         case '7': affichageApresTri(trierLesTrajets(trips)); break;
         case '8': console.log("\nNombre total de tickets :", nombreTotalTicketVendus(tickets)); break;
         case '9': console.log(`\nChiffre d'affaires total : ${chiffreDaffaireTotal(tickets)} DH`); break;

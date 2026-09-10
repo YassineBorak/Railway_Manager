@@ -127,7 +127,6 @@ function annulerUnTicket(arrTickets, arrTrips){
         console.log('Ticket non trouvé.');
 }
 
-
 // Rechercher un ticket
 function rechercherUnTicket(arrTickets, arrTrips){
     const passgName = clean(prompt('Veuillez entrer le nom de passager: '));
@@ -145,7 +144,7 @@ function rechercherUnTicket(arrTickets, arrTrips){
     }
 
     if(!foundPassger){
-        console.log(`Passager ${passgName} n'est pas disponible`);
+        console.log(`\nPassager ${passgName} n'est pas disponible`);
         return;
     }
 }
@@ -265,6 +264,6 @@ while (menu){
         case '10': console.log(`${trajetPlusVendus(tickets, trips)} tickets vendus`); break;
         case '0': menu = false; break;
         default:
-            'Choix indisponible, choisir à nouveau: '
+            console.log('Choix indisponible, choisir à nouveau: ');
     }
 }
